@@ -15,7 +15,8 @@ try:
    # init i2c for the servo controller
    i2c = machine.I2C(scl=machine.Pin(5), sda=machine.Pin(4))
 
-   import pca9685 as pca
+   import pca9685
+   import servo
 except ImportError:
    print("On host?")
    import requests
@@ -23,13 +24,7 @@ except ImportError:
 SENSOR_URL = "https://www.purpleair.com/json?show=19855"
 LOOP_DELAY_S = 60
 
-# setup the servo controller
-pca.frequency = 50
-
-# FIXME rm
-servo_channel = pca.channels[0]
-while True:
-   pass
+s = servo.Servos(i2c)
 
 # we don't need the soft AP
 ap_if = network.WLAN(network.AP_IF)
@@ -71,6 +66,7 @@ while True:
    print("Currently {}% badness".format(100 * percentage))
 
    # now, do a servo!
+   s.position(0, degrees=180 - (percentage * 180.0))
 
    time.sleep(LOOP_DELAY_S)
 
