@@ -4,6 +4,7 @@ assume that boot.py has connected us to the network already.
 import time
 import json
 import sys
+import aqi
 
 #import requests or urequests
 try:
@@ -22,7 +23,7 @@ except ImportError:
    import requests
 
 SENSOR_URL = "https://www.purpleair.com/json?show=19855"
-LOOP_DELAY_S = 60
+LOOP_DELAY_S = 2 * 60
 
 s = servo.Servos(i2c)
 
@@ -58,15 +59,16 @@ while True:
    # get the current stats object (for some reason it's a JSON object embedded in a string)
    stats = json.loads(sensor['results'][0]['Stats'])
    # the 10 minute average (the shortest non-instant reading)
-   avg = stats['v1']
+   avg = aqi.aqi_from_pm(stats['v1'])
 
    # make it something we can servo, assuming our max range goes up to 200 counts
    percentage = avg / 200.0
+   deg = 180 - (percentage * 180.0)
 
-   print("Currently {}% badness".format(100 * percentage))
+   print("Currently {}% badness ({} degrees)".format(100 * percentage, deg))
 
    # now, do a servo!
-   s.position(0, degrees=180 - (percentage * 180.0))
+   s.position(0, degrees=deg)
 
    time.sleep(LOOP_DELAY_S)
 
