@@ -25,4 +25,87 @@ wifi:
     password: "qJZlcfcIvGqY"
 
 captive_portal:
-    
+
+
+servo:
+  - id: servo1 
+    output: spwm1
+    restore: True
+    transition_length: 1s
+  - id: servo2 
+    output: spwm2
+    restore: True
+    transition_length: 1s
+  - id: servo3 
+    output: spwm3
+    restore: True
+    transition_length: 1s
+  - id: servo4 
+    output: spwm4
+    restore: True
+    transition_length: 1s
+  - id: servo5 
+    output: spwm5
+    restore: True
+    transition_length: 1s
+  - id: servo6 
+    output: spwm6
+    restore: True
+    transition_length: 1s
+
+# the PWM outputs
+output:
+  - platform: esp8266_pwm
+    id: spwm1
+    pin: 5
+    frequency: 50 Hz
+  - platform: esp8266_pwm
+    id: spwm2
+    pin: 0
+    frequency: 50 Hz
+  - platform: esp8266_pwm
+    id: spwm3
+    pin: 4
+    frequency: 50 Hz
+  - platform: esp8266_pwm
+    id: spwm4
+    pin: 13
+    frequency: 50 Hz
+  - platform: esp8266_pwm
+    id: spwm5
+    pin: 12
+    frequency: 50 Hz
+  - platform: esp8266_pwm
+    id: spwm6
+    pin: 16
+    frequency: 50 Hz
+
+# expose it to HA
+number:
+  - platform: template
+    name: Servo Control
+    min_value: -100
+    max_value: 100
+    step: 1
+    optimistic: true
+    set_action:
+      then:
+        - servo.write:
+            id: servo1
+            level: !lambda 'return x / 100.0;' 
+        - servo.write:
+            id: servo2
+            level: !lambda 'return x / 100.0;' 
+        - servo.write:
+            id: servo3
+            level: !lambda 'return x / 100.0;' 
+        - servo.write:
+            id: servo4
+            level: !lambda 'return x / 100.0;' 
+        - servo.write:
+            id: servo5
+            level: !lambda 'return x / 100.0;' 
+        - servo.write:
+            id: servo6
+            level: !lambda 'return x / 100.0;' 
+
