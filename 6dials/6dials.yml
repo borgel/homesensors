@@ -26,59 +26,57 @@ wifi:
 
 captive_portal:
 
+i2c:
+  sda: D2
+  scl: D1
+  scan: True
+  frequency: 500kHz
+
+pca9685:
+  - id: pca9685_hub1
+    address: 0x40
+    frequency: 50 Hz
 
 servo:
   - id: servo1 
     output: spwm1
-    restore: True
     transition_length: 1s
   - id: servo2 
     output: spwm2
-    restore: True
     transition_length: 1s
   - id: servo3 
     output: spwm3
-    restore: True
     transition_length: 1s
   - id: servo4 
     output: spwm4
-    restore: True
     transition_length: 1s
   - id: servo5 
     output: spwm5
-    restore: True
     transition_length: 1s
   - id: servo6 
     output: spwm6
-    restore: True
     transition_length: 1s
 
 # the PWM outputs
 output:
-  - platform: esp8266_pwm
+  - platform: pca9685
     id: spwm1
-    pin: 5
-    frequency: 50 Hz
-  - platform: esp8266_pwm
+    channel: 0
+  - platform: pca9685
     id: spwm2
-    pin: 0
-    frequency: 50 Hz
-  - platform: esp8266_pwm
+    channel: 1
+  - platform: pca9685 
     id: spwm3
-    pin: 4
-    frequency: 50 Hz
-  - platform: esp8266_pwm
+    channel: 2
+  - platform: pca9685
     id: spwm4
-    pin: 13
-    frequency: 50 Hz
-  - platform: esp8266_pwm
+    channel: 3
+  - platform: pca9685
     id: spwm5
-    pin: 12
-    frequency: 50 Hz
-  - platform: esp8266_pwm
+    channel: 4
+  - platform: pca9685
     id: spwm6
-    pin: 16
-    frequency: 50 Hz
+    channel: 5
 
 # expose it to HA
 number:
@@ -108,4 +106,5 @@ number:
         - servo.write:
             id: servo6
             level: !lambda 'return x / 100.0;' 
+
 
