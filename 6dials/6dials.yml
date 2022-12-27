@@ -81,11 +81,86 @@ output:
 # expose it to HA
 number:
   - platform: template
-    name: Servo Control
+    name: 1 AQI
+    min_value: 0
+    max_value: 500
+    step: 1
+    optimistic: true
+    set_action:
+      then:
+        - servo.write:
+            id: servo1
+            # range is -1 to 1
+            level: !lambda 'return ((x / 500.0) * 2) - 1.0;'
+  - platform: template
+    name: 2 Current Temp F
+    min_value: 0.0
+    max_value: 110.0
+    step: 1
+    optimistic: true
+    set_action:
+      then:
+        - servo.write:
+            id: servo2
+            # range is -1 to 1
+            level: !lambda 'return (((x / 110) * 2) - 1.0) * -1.0;'
+  - platform: template
+    name: 3 Hourly Precip Inches
+    min_value: 0.0
+    max_value: 2.0
+    step: 0.001
+    optimistic: true
+    set_action:
+      then:
+        - servo.write:
+            id: servo3
+            # range is -1 to 1
+            level: !lambda 'return ((x / 2) * 2) - 1.0;'
+  - platform: template
+    name: 4 Pct Chance of Rain
+    min_value: 0.0
+    max_value: 100.0
+    step: 1
+    optimistic: true
+    set_action:
+      then:
+        - servo.write:
+            id: servo4
+            # range is -1 to 1
+            level: !lambda 'return (((x / 100) * 2) - 1.0) * -1.0;'
+  - platform: template
+    name: 5 Daily Temp Low F
+    min_value: 0.0
+    max_value: 110.0
+    step: 1
+    optimistic: true
+    set_action:
+      then:
+        - servo.write:
+            id: servo5
+            # range is -1 to 1
+            level: !lambda 'return ((x / 110) * 2) - 1.0;'
+  - platform: template
+    name: 6 Daily Temp High F
+    min_value: 0.0
+    max_value: 110.0
+    step: 1
+    optimistic: true
+    set_action:
+      then:
+        - servo.write:
+            id: servo6
+            # range is -1 to 1
+            level: !lambda 'return (((x / 110) * 2) - 1.0) * -1.0;'
+
+  # single handle to control all the servos at once
+  - platform: template
+    name: All Servos
     min_value: -100
     max_value: 100
     step: 1
     optimistic: true
+    initial_value: 0.0
     set_action:
       then:
         - servo.write:
