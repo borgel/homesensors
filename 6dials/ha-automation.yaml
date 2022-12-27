@@ -1,0 +1,79 @@
+alias: Periodically Update 6Dials Values
+description: Showing environmental data.
+trigger:
+  - platform: time_pattern
+    minutes: /15
+condition: []
+action:
+  - parallel:
+      - service: number.set_value
+        data:
+          value: "{{ states('sensor.home_caqi') | float }}"
+        target:
+          entity_id: number.1_aqi
+      - service: number.set_value
+        data:
+          value: "{{ state_attr('weather.home', 'temperature') | float}}"
+        target:
+          entity_id: number.2_current_temp_f
+      - service: number.set_value
+        data:
+          value: >-
+            {{ state_attr('weather.openweathermap', 'forecast')[0].precipitation
+            | float}}
+        target:
+          entity_id: number.3_hourly_precip_inches
+      - service: number.set_value
+        data:
+          value: >-
+            {{ state_attr('weather.ksfo_daynight',
+            'forecast')[0].precipitation_probability | float }}
+        target:
+          entity_id: number.4_pct_chance_of_rain
+      - service: number.set_value
+        data:
+          value: "{{ state_attr('weather.home', 'forecast')[0].templow | float}}"
+        target:
+          entity_id: number.5_daily_temp_low_f
+      - service: number.set_value
+        data:
+          value: "{{ state_attr('weather.home', 'forecast')[0].temperature | float}}"
+        target:
+          entity_id: number.6_daily_temp_high_f
+    enabled: false
+  - service: number.set_value
+    data:
+      value: "{{ states('sensor.home_caqi') | float }}"
+    target:
+      entity_id: number.1_aqi
+  - service: number.set_value
+    data:
+      value: "{{ state_attr('weather.home', 'temperature') | float}}"
+    target:
+      entity_id: number.2_current_temp_f
+  - service: number.set_value
+    data:
+      value: >-
+        {{ state_attr('weather.openweathermap', 'forecast')[0].precipitation |
+        float}}
+    target:
+      entity_id: number.3_hourly_precip_inches
+  - service: number.set_value
+    data:
+      value: >-
+        {{ state_attr('weather.openweathermap',
+        'forecast')[0].precipitation_probability | float }}
+    target:
+      entity_id: number.4_pct_chance_of_rain
+  - service: number.set_value
+    data:
+      value: "{{ state_attr('weather.home', 'forecast')[0].templow | float}}"
+    target:
+      entity_id: number.5_daily_temp_low_f
+  - service: number.set_value
+    data:
+      value: "{{ state_attr('weather.home', 'forecast')[0].temperature | float}}"
+    target:
+      entity_id: number.6_daily_temp_high_f
+mode: single
+
